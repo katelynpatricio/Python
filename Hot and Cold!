@@ -1,0 +1,80 @@
+#The program hotcold.py is a graphical game where a user moves a sprite on a grid to find a hidden location, receiving feedback ("Warmer" or "Colder") based on proximity, and the game ends when the target is found.
+
+from graphics import *
+import random
+import math
+
+#Incorporate pacman functions into this program
+def moveSprite(sprite, direction, unit): 
+    if direction == 'Right':
+        sprite.move(unit, 0)
+    elif direction == 'Left':
+        sprite.move(-unit, 0)
+    elif direction == 'Up':
+        sprite.move(0, -unit)
+    elif direction == 'Down':
+        sprite.move(0, unit)
+
+#Create found function that takes four inputs (the randomized coordinates) and returns when the distances is less than or equal to 5 units
+def found(user_x, user_y, hide_x, hide_y):
+    dist = math.sqrt((x - rand_x)**2 + (y - rand_y)**2)
+    return dist <= 5
+
+win = GraphWin("Hot and Cold", 400, 400)
+win.setBackground("white")
+
+#Randomize the user and hidden x and y coordinates. To lessen the number of random coordinates only provide multiples of 10. 
+rand_x, rand_y = random.randint(1, 38) * 10, random.randint(1, 38) * 10
+x, y = random.randint(1, 38) * 10, random.randint(1, 38) * 10
+
+user = Circle(Point(x, y), 15)
+user.setFill('yellow')
+user.draw(win)
+
+#Initialize the distance between the two randomized points
+dist = math.sqrt((rand_x - x)**2 + (rand_y - y)**2)
+
+#Initialize text
+text = Text(Point(200, 65), "")
+
+while True:
+    key = win.getKey()
+    
+    if key == 'Right' and x < 380: #Movement only allowed when user is in bound of the window 
+        moveSprite(user, key, 10)
+        x += 10
+    elif key == 'Left' and x > 20:
+        moveSprite(user, key, 10)
+        x -= 10
+    elif key == 'Up' and y > 20:
+        moveSprite(user, key, 10)
+        y -= 10
+    elif key == 'Down' and y < 380:
+        moveSprite(user, key, 10)
+        y += 10
+        
+    new_dist = math.sqrt((rand_x - x)**2 + (rand_y - y)**2) #New distance between the new randomized coordinates
+    
+    text.undraw() #To prevent the text from overlapping eachother, each loop will undraw a redraw text depending on the if statement
+    
+    if new_dist < dist:
+        text = Text(Point(200, 65), "Getting Warmer!")
+        text.setSize(25)
+        text.draw(win)
+    elif new_dist > dist:
+        text = Text(Point(200, 65), "Getting Colder!")
+        text.setSize(25)
+        text.draw(win)
+        
+    dist = new_dist #old distance equals new distance everytime the user moves
+    
+    #If the coordinates are less than or equal to 5 units away from eachother, the hidden coordinate is considered found
+    if found(x, y, rand_x, rand_y):
+        text.undraw()
+        text = Text(Point(200, 65), "You found the hidden coordinate!")
+        text.setSize(25)
+        text.draw(win)
+        break
+
+win.getMouse()
+win.close()
