@@ -1,0 +1,76 @@
+#This program creates a drawing pad where users can doodle by moving a pen using the arrow keys
+
+from graphics import *
+
+win = GraphWin("Drawing Pad", 400, 400)
+win.setBackground("white")
+
+#Intialize pen position and color
+center = Point(200,200)
+color = "red" 
+pen = Circle(center, 5)
+pen.setFill(color)
+pen.draw(win)
+
+#Reused pacman movement function to move the pen depending on keystroke given
+def moveSprite(sprite, direction, unit):
+    if direction == 'Right':
+        sprite.move(unit, 0)
+    elif direction == 'Left':
+        sprite.move(-unit, 0)
+    elif direction == 'Up':
+        sprite.move(0, -unit)
+    elif direction == 'Down':
+        sprite.move(0, unit)
+
+#Create function that draws a line between where the pen initially is (p1) and its second location (p2). Can also input what color the pen should be. 
+def line(p1, p2, color):
+    line = Line(p1,p2)
+    line.setFill(color)
+    line.setWidth(10)
+    line.draw(win)
+    
+intro = Text(Point(200, 20), "Use arrow keys to move and draw. \nPress the 'Space Bar' to lift the pen. Press 'q' to quit the program. Have Fun!")
+intro.setSize(12)
+intro.draw(win)
+    
+#Loop to move the pen and draw the line following its path. 
+while True:
+    key = win.getKey()
+    old_cent = Point(center.getX(), center.getY())
+    
+    #Use the space bar to toggle the pen up or down on the pad. 
+    if key == "space":
+        if color == "red":
+            color = "white"
+        else:
+            color = "red"
+    
+    #Updates the pens position updating its coordinates depending on the keystroke given
+    if key == "Up":
+        moveSprite(pen,"Up", 10)
+        center.move(0,-10)
+    elif key == "Down":
+        moveSprite(pen,"Down", 10)
+        center.move(0, 10)
+    elif key == "Left":
+        moveSprite(pen,"Left", 10)
+        center.move(-10,0)
+    elif key == "Right":
+        moveSprite(pen,"Right", 10)
+        center.move(10,0)
+    
+    #Draw a line between the pens first and second center coordinates. If statement to only draw when the color is red (prevents drawing from being erased when color is white)
+    if color == "red":
+        line(old_cent, center, color)
+      
+    #Pen is undrawn and drawn to make sure it is ontop of the line and not hidden behind it. 
+    pen.undraw()
+    pen = Circle(center, 5)
+    pen.setFill(color)
+    pen.draw(win)
+        
+    #Exit option
+    if key == "q":
+        win.close()
+        break
