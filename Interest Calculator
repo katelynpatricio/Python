@@ -1,0 +1,60 @@
+#This program creates a customizable graph of investment growth over time, allowing users to specify the y-axis interval and maximum value for proper scaling.
+
+from graphics import *
+
+#Get input from user
+amount = float(input("Please enter your starting dollar amount: "))
+rate = float(input('Please enter your interest rate: '))
+mv = int(input('Please enter the max y-axis value: '))
+inter = int(input('Please enter the y-axis interval: '))
+
+#Function creates a window that takes the input mv(max value) and inter(intervals) in order to create tick marks depending on the inputs
+def createWindow(maxValue, interval):
+    W, H = 600,600
+    padx, pady = 1, 750
+
+    xlo, ylo = 0, 0
+    xhi, yhi = 10, maxValue
+    midx = (xhi + xlo)/2
+    mixy = (yhi + ylo)/2
+
+    win = GraphWin("See your investment grow!", W, H)
+    win.setCoords(xlo - padx, ylo - pady, xhi + padx, yhi + pady)
+
+    p1 = Point(xlo, ylo)
+    p2 = Point(xhi, yhi)
+    plotArea = Rectangle(p1, p2)
+
+    #Draws a tick mark depending on the max value and the interval given
+    for i in range(0, maxValue + 1, interval):
+        tickMark = Line(Point(0,i), Point(-0.25, i))
+        tickMark.draw(win)
+        #Draws the text of the interval the loop is currently in 
+        mark = Text(Point(-0.50,i), f"{i}")
+        mark.setSize(7)
+        mark.draw(win)
+
+    xlabel = Text(Point(midx, -pady/2), "Time (years)")
+    xlabel.draw(win)
+
+    #Returns needed variables to be used below
+    return win, [xlo, ylo, xhi, yhi]
+
+win, coords = createWindow(mv, inter)
+xlo, ylo, xhi, yhi = coords
+
+rect = Rectangle(Point(xlo,ylo), Point(1, amount))
+rect.setFill('green')
+rect.draw(win)
+
+#Creates a rectangle reflecting the given interest rate on the dollar amount
+for i in range(xhi):
+    interest = amount * (rate/100)
+    amount = amount + interest
+    
+    rect = Rectangle(Point(xlo + i, ylo), Point(xlo + i + 1, amount))
+    rect.setFill('green')
+    rect.draw(win)
+    
+p = win.getMouse()
+win.close()
