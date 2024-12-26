@@ -108,23 +108,3 @@ def main():
 
 
 main()
-
-"""
-Citations:
-    
-Obtained Flappy Bird images from https://github.com/samuelcust/flappy-bird-assets
-    
-Referenced https://www.youtube.com/watch?v=VUFvY349ess&t=4887s for help with game logic. 
-
-https://chatgpt.com/share/675a6437-0d98-8005-a7c2-f32685f1d31a
-- Chatgpt was utilized to help with replay function as my game was running very slow after the third replay. From my understanding,
-the game was being clogged up with items, despite being undrawn at the bottom of my function. In order to combat this, all the 
-items on the window were undrawn before the rest of the function was ran. I applied many of the recommended edits, but adding -
-
-for items in win.items[:]:
-    items.undraw()
-    
-- fixed my replay function right away. From this conversation I learned about the graphics packages window attribute 'items'. 
-This attribute stores all the items drawn on the window. I was unable to find such additon in stack overflow or other conversations
-so Chatgpt was very helpful in this regard. 
-"""
